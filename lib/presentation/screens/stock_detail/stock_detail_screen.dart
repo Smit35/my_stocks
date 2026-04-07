@@ -53,12 +53,21 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            Text(
-              stockInfo['name']?.toString().split(' ').take(2).join(' ') ?? currentStock.name,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+            Expanded(
+              child: Text(
+                stockInfo['name']
+                    ?.toString()
+                    .split(' ')
+                    .take(2)
+                    .join(' ') ??
+                    currentStock.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ],
@@ -90,18 +99,17 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
         children: [
           // Price Section
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Large Price Display - Further reduced font size
                 RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
                         text: '₹',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Colors.grey[600],
                         ),
@@ -109,85 +117,75 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       TextSpan(
                         text: currentStock.currentPrice.toStringAsFixed(0),
                         style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.w300,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w600,
                           color: Colors.black,
                           height: 1.0,
                         ),
                       ),
                       TextSpan(
-                        text: '.${(currentStock.currentPrice % 1 * 100).toInt().toString().padLeft(2, '0')}',
+                        text:
+                        '.${(currentStock.currentPrice % 1 * 100).toInt().toString().padLeft(2, '0')}',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
                           color: Colors.grey[600],
                         ),
                       ),
                     ],
                   ),
                 ),
-                
-                const SizedBox(height: 8),
-                
-                // Change Amount and Percentage
+                const SizedBox(height: 4),
                 Text(
                   '${isPositive ? '+' : ''}₹${currentStock.changeAmount.toStringAsFixed(0)} (${currentStock.changePercentage.toStringAsFixed(1)}%)',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: changeColor,
                   ),
                 ),
-                
-                const SizedBox(height: 16),
-                
-                // Company Info Tags
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     _buildInfoTag(stockInfo['sector']?.toString() ?? 'INDUSTRIAL'),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     _buildInfoTag(stockInfo['marketCap']?.toString() ?? 'LARGE CAP'),
                   ],
                 ),
               ],
             ),
           ),
-          
           // Chart Section
           Container(
-            height: 300,
+            height: 150,
             margin: const EdgeInsets.symmetric(horizontal: 16),
             child: _buildChart(chartData, changeColor),
           ),
           
           // Time Period Selector
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: ['1D', '1W', '1M', '3M', '6M', 'YTD', '1Y'].map((period) {
                 final isSelected = selectedTimeframe == period;
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedTimeframe = period;
-                      });
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected ? LightTheme.positiveColor : Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        period,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected ? Colors.white : Colors.grey[600],
-                        ),
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedTimeframe = period;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: isSelected ? LightTheme.positiveColor : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      period,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: isSelected ? Colors.white : Colors.grey[600],
                       ),
                     ),
                   ),
@@ -210,12 +208,12 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             ),
           ),
           
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           
           // Your Position Section
           _buildPositionSection(),
           
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           
           // Action Buttons
           Padding(
@@ -281,7 +279,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
   Widget _buildInfoTag(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(4),
@@ -289,7 +287,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: FontWeight.w500,
           color: Colors.grey[700],
         ),
@@ -324,16 +322,17 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
   Widget _buildTab(String title, bool isSelected) {
     return Column(
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: isSelected ? Colors.black : Colors.grey[600],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Container(
           height: 2,
           width: 40,
@@ -363,7 +362,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             'Your Position',
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: Colors.black,
             ),
           ),
@@ -388,7 +387,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       '$shares',
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
@@ -412,7 +411,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       '₹${NumberFormat('#,##0.0').format(marketValue)}',
                       style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
@@ -443,7 +442,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       '₹${avgCost.toStringAsFixed(1)}',
                       style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
@@ -467,7 +466,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       '${portfolioDiversity.toStringAsFixed(2)}%',
                       style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black,
                       ),
                     ),
