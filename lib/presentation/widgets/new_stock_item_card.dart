@@ -16,11 +16,9 @@ class NewStockItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPositive = stock.changeAmount >= 0;
-    final changeColor = isPositive ? LightTheme.positiveColor : LightTheme.negativeColor;
-    final priceBackgroundColor = isPositive ? 
-        const Color(0xFFF1F8F1) : // Very light green background for price area
-        const Color(0xFFFFF5F5);  // Very light red background for price area
-    
+    final changeColor =
+    isPositive ? LightTheme.positiveColor : LightTheme.negativeColor;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -30,20 +28,36 @@ class NewStockItemCard extends StatelessWidget {
           border: Border(
             bottom: BorderSide(color: Colors.grey[100]!, width: 1),
           ),
+
+          gradient: LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: isPositive
+                ? [
+              Colors.green.withOpacity(0.12),
+              Colors.green.withOpacity(0.05),
+              Colors.transparent,
+            ]
+                : [
+              Colors.red.withOpacity(0.12),
+              Colors.red.withOpacity(0.05),
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.3, 0.75],
+          ),
         ),
-        child: Row(
-          children: [
-            // Stock Logo/Symbol and Info
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            children: [
+              /// LEFT SECTION
+              Expanded(
                 child: Row(
                   children: [
-                    // Stock Logo/Symbol
                     _buildStockLogo(),
-                    const SizedBox(width: 12),
-                    
-                    // Stock Info
+                    const SizedBox(width: 8),
+
+                    /// Stock Info
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,16 +67,19 @@ class NewStockItemCard extends StatelessWidget {
                               Text(
                                 stock.symbol,
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
                                 ),
                               ),
                               const SizedBox(width: 6),
+
+                              /// NSE badge
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey.withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -76,13 +93,20 @@ class NewStockItemCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+
+                          const SizedBox(height: 2),
+
                           Text(
-                            _getShortName(stock.name.isNotEmpty ? stock.name : stock.symbol),
+                            _getShortName(
+                                stock.name.isNotEmpty
+                                    ? stock.name
+                                    : stock.symbol),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               color: Colors.grey[600],
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -90,24 +114,17 @@ class NewStockItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-            
-            // Price Info with colored background
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              decoration: BoxDecoration(
-                color: priceBackgroundColor,
-              ),
-              child: Column(
+
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    stock.currentPrice > 0 
+                    stock.currentPrice > 0
                         ? '₹${_formatPrice(stock.currentPrice)}'
                         : '--',
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
@@ -124,8 +141,8 @@ class NewStockItemCard extends StatelessWidget {
                     ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -136,8 +153,8 @@ class NewStockItemCard extends StatelessWidget {
     final logoText = _getLogoText(stock.symbol);
     
     return Container(
-      width: 40,
-      height: 40,
+      width: 36, // ⬅️ reduced
+      height: 36,
       decoration: BoxDecoration(
         color: logoColor,
         borderRadius: BorderRadius.circular(8),
@@ -147,7 +164,7 @@ class NewStockItemCard extends StatelessWidget {
           logoText,
           style: TextStyle(
             color: Colors.white,
-            fontSize: logoText.length > 3 ? 10 : 12,
+            fontSize: logoText.length > 3 ? 9 : 11,
             fontWeight: FontWeight.w600,
           ),
           textAlign: TextAlign.center,
