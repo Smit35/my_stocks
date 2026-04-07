@@ -546,32 +546,48 @@ class SimpleLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (data.isEmpty) return;
 
-    final paint = Paint()
+    final linePaint = Paint()
       ..color = lineColor
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-    final path = Path();
-    
-    // Find min and max prices for scaling
+    final dashPaint = Paint()
+      ..color = Colors.grey.withOpacity(0.4)
+      ..strokeWidth = 1;
+
+    final dashWidth = 6;
+    final dashSpace = 4;
+    double startX = 0;
+    final centerY = size.height / 2;
+
+    while (startX < size.width) {
+      canvas.drawLine(
+        Offset(startX, centerY),
+        Offset(startX + dashWidth, centerY),
+        dashPaint,
+      );
+      startX += dashWidth + dashSpace;
+    }
     double minPrice = data.first['price'];
     double maxPrice = data.first['price'];
-    
+
     for (final point in data) {
       final price = point['price'];
       if (price < minPrice) minPrice = price;
       if (price > maxPrice) maxPrice = price;
     }
-    
-    final priceRange = maxPrice - minPrice;
-    if (priceRange == 0) return;
 
-    // Draw the line
+    final range = maxPrice - minPrice;
+    if (range == 0) return;
+
+    final path = Path();
+
     for (int i = 0; i < data.length; i++) {
       final x = (i / (data.length - 1)) * size.width;
-      final normalizedPrice = (data[i]['price'] - minPrice) / priceRange;
-      final y = size.height - (normalizedPrice * size.height);
-      
+      final normalized = (data[i]['price'] - minPrice) / range;
+      final y = size.height - (normalized * size.height);
+
       if (i == 0) {
         path.moveTo(x, y);
       } else {
@@ -579,19 +595,7 @@ class SimpleLinePainter extends CustomPainter {
       }
     }
 
-    canvas.drawPath(path, paint);
-    
-    // Add some gradient fill under the line
-    final fillPaint = Paint()
-      ..color = lineColor.withValues(alpha: 0.1)
-      ..style = PaintingStyle.fill;
-      
-    final fillPath = Path.from(path);
-    fillPath.lineTo(size.width, size.height);
-    fillPath.lineTo(0, size.height);
-    fillPath.close();
-    
-    canvas.drawPath(fillPath, fillPaint);
+    canvas.drawPath(path, linePaint);
   }
 
   @override
