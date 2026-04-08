@@ -1,6 +1,6 @@
 class ApiConstants {
   static const String baseUrl = 'https://api.twelvedata.com';
-  static const String apiKey = '077de3d82dc84e7685e26fcd73b75ae2';
+  static const String apiKey = '6f2e164918c34313a50ea4af612abaa7';//'077de3d82dc84e7685e26fcd73b75ae2';
   
   // Endpoints
   static const String symbolSearch = '$baseUrl/symbol_search';
