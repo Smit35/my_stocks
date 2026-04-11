@@ -5,6 +5,7 @@ import 'data/datasources/local_storage.dart';
 import 'data/repositories/user_repository.dart';
 import 'data/repositories/stock_repository.dart';
 import 'data/repositories/watchlist_repository.dart';
+import 'data/repositories/crypto_repository.dart';
 import 'presentation/bloc/auth/auth_bloc.dart';
 import 'presentation/bloc/auth/auth_event.dart';
 import 'presentation/bloc/auth/auth_state.dart';
@@ -12,9 +13,11 @@ import 'presentation/bloc/watchlist/watchlist_bloc.dart';
 import 'presentation/bloc/watchlist/watchlist_event.dart';
 import 'presentation/bloc/stock_search/stock_search_bloc.dart';
 import 'presentation/bloc/stock_detail/stock_detail_bloc.dart';
+import 'presentation/bloc/crypto/crypto_bloc.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/watchlist/new_watchlist_screen.dart';
 import 'presentation/screens/stock_detail/stock_detail_screen.dart';
+import 'presentation/screens/crypto/crypto_screen.dart';
 import 'data/models/stock_model.dart';
 
 void main() async {
@@ -36,6 +39,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (context) => UserRepository()),
         RepositoryProvider(create: (context) => StockRepository()),
         RepositoryProvider(create: (context) => WatchlistRepository()),
+        RepositoryProvider(create: (context) => CryptoRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -60,6 +64,11 @@ class MyApp extends StatelessWidget {
               stockRepository: context.read<StockRepository>(),
             ),
           ),
+          BlocProvider(
+            create: (context) => CryptoBloc(
+              cryptoRepository: context.read<CryptoRepository>(),
+            ),
+          ),
         ],
         child: Builder(
           builder: (context) => MaterialApp(
@@ -78,6 +87,13 @@ class MyApp extends StatelessWidget {
                     );
                   }
                   return null;
+                case '/crypto':
+                  return MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<CryptoBloc>(),
+                      child: const CryptoScreen(),
+                    ),
+                  );
                 default:
                   return null;
               }

@@ -26,6 +26,7 @@ class _NewWatchlistScreenState extends State<NewWatchlistScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
   bool _isSearching = false;
+  int _selectedNavIndex = 2;
 
   @override
   void dispose() {
@@ -288,11 +289,11 @@ class _NewWatchlistScreenState extends State<NewWatchlistScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildNavItem(Icons.grid_view, false),
-            _buildNavItem(Icons.trending_up, false),
-            _buildNavItem(Icons.bookmark_border, true),
-            _buildNavItem(Icons.search, false),
-            _buildNavItem(Icons.person_outline, false),
+            _buildNavItem(Icons.grid_view, 0),
+            _buildNavItem(Icons.trending_up, 1),
+            _buildNavItem(Icons.bookmark_border, 2),
+            _buildNavItem(Icons.search, 3),
+            _buildNavItem(Icons.person_outline, 4),
           ],
         ),
       ),
@@ -300,11 +301,15 @@ class _NewWatchlistScreenState extends State<NewWatchlistScreen> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, bool isSelected) {
+  Widget _buildNavItem(IconData icon, int index) {
+    final isSelected = _selectedNavIndex == index;
+    
     return GestureDetector(
       onTap: () {
         if (icon == Icons.person_outline) {
           _showLogoutDialog();
+        } else if (icon == Icons.trending_up) {
+          Navigator.of(context).pushNamed('/crypto');
         }
       },
       child: Container(
